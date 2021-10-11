@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from api.db import DBClient
+from db import DBClient
 import logging
 import os
 
@@ -9,7 +9,12 @@ gunicorn_logger = logging.getLogger('gunicorn.error')
 api.logger.handlers.extend(gunicorn_logger.handlers)
 api.logger.setLevel(gunicorn_logger.level)
 
-db_client = DBClient('metrics-db', 'metrics', os.environ.get('DB_USER'), os.environ.get('DB_PASSWORD'))
+db_client = DBClient('172.19.0.3', 'metrics', os.environ.get('DB_USER'), os.environ.get('DB_PASSWORD'))
+
+
+@api.route('/status', methods=['GET'])
+def status():
+    return jsonify({'status': 'OK'}), 200
 
 
 @api.route('/orchard', methods=['POST'])
